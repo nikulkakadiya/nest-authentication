@@ -15,7 +15,7 @@ import { AuthModule } from 'src/auth/auth.module';
 export class UserModule implements NestModule{
 
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(UserMiddleWare).forRoutes({path:'/user/register',method:RequestMethod.POST})
+    consumer.apply(UserMiddleWare).forRoutes({path:'/user/register',method:RequestMethod.POST})    
   }
 
 }

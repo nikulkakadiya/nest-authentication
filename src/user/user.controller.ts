@@ -5,19 +5,29 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/auth/auth.service';
 import { RoleGuard } from 'src/guard/role.guard';
+import { log } from 'console';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService,private readonly authService:AuthService) {}
 
   @Post('register')
-  async create(@Body() createUserDto: CreateUserDto) {
-    return await this.userService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto,@Response() res) {
+    const userName=await this.userService.findByUserName(createUserDto.userName);
+    if(userName){
+      return res.status(400).json({
+        massage:"Duplicate username.."
+      })
+    }
+    const data=await this.userService.create(createUserDto);
+    return res.status(200).json({
+      data
+    })
   }
 
   @UseGuards(AuthGuard('local'))
   @Post('login')
-  async login(@Request() req):Promise<string>{
+  async login(@Request() req):Promise<string>{    
     return await this.authService.generateToken(req.user);
   }
 

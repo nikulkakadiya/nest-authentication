@@ -13,8 +13,8 @@ export class LocalStrategy extends PassportStrategy(Strategy){
     }
 
     async validate(username:string,password:string) : Promise<any>{
-        const user:any=await this.userService.findByUserName(username);        
-        if (!user==undefined) {
+        const user:any=await this.userService.findByUserName(username);      
+        if (!user==undefined || user==null) {
             throw new UnauthorizedException("Valid email and password");
         }
         const isCheck=await bcrypt.compare(password,user.password)

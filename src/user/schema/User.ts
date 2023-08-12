@@ -6,7 +6,7 @@ export type UserDocument=User&Document;
 @Schema()
 export class User{
 
-    @Prop()
+    @Prop({unique:[true,'Duplicate email']})    
     userName:string;
 
     @Prop()
