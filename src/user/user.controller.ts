@@ -5,7 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/auth/auth.service';
 import { RoleGuard } from 'src/guard/role.guard';
-import { log } from 'console';
+import { Roles } from 'src/guard/roles.decorator';
 
 @Controller('user')
 export class UserController {
@@ -32,25 +32,29 @@ export class UserController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'),new RoleGuard(['user','admin']))
+  @UseGuards(AuthGuard('jwt'),RoleGuard)
+  @Roles('admin','user')
   async findAll() {
     return await this.userService.findAll();
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'),new RoleGuard(['user','admin']))
+  @UseGuards(AuthGuard('jwt'),RoleGuard)
+  @Roles('admin','user')
   async findOne(@Param('id') id: string) {
     return await this.userService.findOne(id);
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard('jwt'),new RoleGuard(['admin']))
+  @UseGuards(AuthGuard('jwt'),RoleGuard)
+  @Roles('admin')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return await this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'),new RoleGuard(['admin']))
+  @UseGuards(AuthGuard('jwt'),RoleGuard)
+  @Roles('admin')
   async remove(@Param('id') id: string,@Response() res):Promise<string> {
     
     const data=await this.userService.remove(id);
